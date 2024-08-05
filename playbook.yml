@@ -1,0 +1,52 @@
+---
+- name: Configuración de servidores
+  hosts: all
+  become: yes
+  tasks:
+    - name: Actualizar cache de software de apt
+      apt:
+        update_cache: yes
+
+    - name: Instalar apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Instalar cowsay
+      apt:
+        name: cowsay
+        state: present
+
+    - name: Crear archivo de prueba
+      file:
+        path: /tmp/archivo_prueba.txt
+        state: touch
+
+    - name: Copiar archivo local al servidor
+      copy:
+        src: ./saul.txt 
+        dest: /tmp/saul.txt 
+
+    - name: Crear carpetas
+      file:
+        path: "/tmp/App"
+        state: directory
+      loop:
+        - uno
+        - dos
+        - tres
+
+    - name: Iniciar el servicio de apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Agregar un usuario al servidor
+      user:
+        name: saul04
+        state: present
+        shell: /bin/bash
+
+    - name: Ejecutar un script en el servidor
+      script: ./script_prueba.sh
